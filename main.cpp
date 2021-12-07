@@ -137,7 +137,7 @@ float FloatType::divide(float lhs, float rhs)
         std::cout << std::endl;
         std::cout << "warning, floating point division by zero returns 'inf' !" <<std::endl;
     }
-   return lhs / rhs;
+    return lhs / rhs;
 }
 
 double DoubleType::add(double lhs, double rhs)
