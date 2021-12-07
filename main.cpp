@@ -136,13 +136,8 @@ float FloatType::divide(float lhs, float rhs)
     {
         std::cout << std::endl;
         std::cout << "warning, floating point division by zero returns 'inf' !" <<std::endl;
-        return lhs / rhs;
     }
-    else 
-    {
-        return lhs / rhs;
-    
-    }
+   return lhs / rhs;
 }
 
 double DoubleType::add(double lhs, double rhs)
@@ -167,12 +162,8 @@ double DoubleType::divide(double lhs, double rhs)
     {
         std::cout << std::endl;
         std::cout << "warning, floating point division by zero returns 'inf' !" <<std::endl;
-        return lhs / rhs;
     }
-    else
-    {
-        return lhs / rhs;
-    }
+    return lhs / rhs;
 }
 
 int IntType::add(int lhs, int rhs)
@@ -192,16 +183,13 @@ int IntType::multiply(int lhs, int rhs)
 
 int IntType::divide(int lhs, int rhs)
 {
-    if(rhs != 0)
-    {
-        return lhs / rhs;
-    }
-    else
+    if(rhs == 0)
     {
         std::cout << "error, integer division by zero will crash the program!" <<std::endl; 
         std::cout << "returning lhs" <<std::endl;
         return lhs;
-    }   
+    } 
+    return lhs / rhs;  
 }
 
 #include <iostream>
