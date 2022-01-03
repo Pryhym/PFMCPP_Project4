@@ -134,15 +134,15 @@ struct FloatType
         return *this;
     }
    
-   FloatType& divide(float rhs)
-   {
-      if (rhs == 0.f)
-      {
+    FloatType& divide(float rhs)
+    {
+        if (rhs == 0.f)
+        {
             std::cout <<"warning: floating point division by zero!" <<std::endl;
-      }
-      *value /= rhs;
-      return *this;
-   }
+        }
+        *value /= rhs;
+        return *this;
+    }
 
     FloatType& add(const FloatType& ft);
     FloatType& subtract(const FloatType& ft);
