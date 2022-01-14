@@ -243,7 +243,7 @@ IntType& IntType::divide(int rhs)
 {
     if(rhs == 0)
     {
-        std::cout <<"error: integer division by zerois an error and will crash the program!"<<std::endl;
+        std::cout <<"error: integer division by zero is an error and will crash the program!"<<std::endl;
         return *this;
     }
     *value /= rhs;
