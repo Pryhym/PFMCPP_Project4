@@ -699,7 +699,7 @@ int main()
     std::cout << "IntType subtract result=" << it.operator-=(2) << std::endl;
     std::cout << "IntType multiply result=" << it.operator*=(2) << std::endl;
     std::cout << "IntType divide result=" << it.operator/=(3) << std::endl << std::endl;
-    std::cout << "Chain calculation = " << (it.operator*=(1000).operator*=(2).operator-=(10).operator+=(100)) << std::endl;
+    std::cout << "Chain calculation = " << (it.operator*=(1000).operator/=(2).operator-=(10).operator+=(100)) << std::endl;
 
         // FloatType object instanciation and method tests
     // --------
