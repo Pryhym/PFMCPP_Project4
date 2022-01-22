@@ -667,7 +667,7 @@ void part6()
     
     std::cout << "Calling FloatType::apply() using a lambda (adds 7.0f) and FloatType as return type:" << std::endl;
     std::cout << "ft3 before: " << ft3 << std::endl;
-    ft3.apply( [&](float&)->FloatType&
+    ft3.apply( [&](float&) -> FloatType&
         {
             ft3 += 7.0f; 
             return ft3;
@@ -682,7 +682,7 @@ void part6()
 
     std::cout << "Calling DoubleType::apply() using a lambda (adds 6.0) and DoubleType as return type:" << std::endl;
     std::cout << "dt3 before: " << dt3 << std::endl;
-    dt3.apply( [&](double&)->DoubleType&
+    dt3.apply( [&](double&) -> DoubleType&
         {
             dt3+=6.0; 
             return dt3;
@@ -697,7 +697,7 @@ void part6()
 
     std::cout << "Calling IntType::apply() using a lambda (adds 5) and IntType as return type:" << std::endl;
     std::cout << "it3 before: " << it3 << std::endl;
-    it3.apply( [&](int&)->IntType&
+    it3.apply( [&](int&) -> IntType&
         {
             it3+=5; 
             return it3;
