@@ -275,92 +275,82 @@ struct FloatType;
 struct DoubleType;
 struct IntType;
 
-
-struct FloatType
+template <typenameNumericType>
+struct Numeric
 {
-    
-    explicit FloatType(float val): value(new float(val)){}
-    ~FloatType()
+    using Type =NumericType;
+
+    explicit Numeric(const Type& val): value(std::make_unique<Type>(val)){}
+   
+    Numeric& operator+=(const Type& rhs)
     {
-        delete value;
-        value = nullptr;
+        *value += rhs;
+        return *this;
+    }
+    
+    Numeric& operator-=(const Type& rhs)
+    {
+        *value -= rhs;
+        return *this;
     }
 
-    FloatType& pow(float val);
-    FloatType& pow(const IntType& it);
-    FloatType& pow(const FloatType& ft);
-    FloatType& pow(const DoubleType& dt);
+    Numeric& operator*=(const Type& rhs)
+    {
+        *value *= rhs;
+        return *this;
+    }
 
-    FloatType& operator +=(float rhs);
-    FloatType& operator -=(float rhs);
-    FloatType& operator *=(float rhs);
-    FloatType& operator /=(float rhs);
+    Numeric& operator/=(const Type& rhs)
+    {
+        if (rhs == 0.f)
+        {
+            std::cout <<"warning: floating point division by zero!" <<std::endl;
+        }
+        *value /= rhs;
+        return *this;
+    }
 
-    FloatType& apply(std::function<FloatType&(float&)>func);
-    FloatType& apply(void(*ptr)(float&));
+    Numeric& apply(std::function<Numeric&(std::unique_ptr<Type>&)>func)
+    {
+        if(func)
+        {
+            return func(*value);
+        }
+        return *this; 
+    }
+
+    Numeric& apply(void(*ptr)(std::unique_ptr<Type>&))
+    {
+        if(ptr)
+        {
+            ptr(*value);
+        }
+        return *this;
+    }
 
     operator float() const { return *value;}
 
 private:
-    float* value;
-    FloatType& powInternal(float power);
+    std::unique_ptr<Type> value;
+    Numeric& powInternal(const Type& power)
+    {
+        *value = static_cast<Type>(std::pow(*value, power));
+        return *this;
+    }
 };
 
-FloatType& FloatType::apply(std::function<FloatType&(float&)>func)
-{
-    if(func != nullptr)
-    {
-        return func(*value);
-    }
-    return *this; 
-}
 
-FloatType& FloatType::apply(void(*ptr)(float&))
-{
-    if(ptr)
-    {
-        ptr(*value);
-    }
-    return *this;
-}
 
-FloatType& FloatType::operator+=(float rhs)
-{
-    *value += rhs;
-    return *this;
-}
 
-FloatType& FloatType::operator-=(float rhs)
-{
-    *value -= rhs;
-    return *this;
-}
 
-FloatType& FloatType::operator*=(float rhs)
-{
-    *value *= rhs;
-    return *this;
-}
+
    
-FloatType& FloatType::operator/=(float rhs)
-{
-if (rhs == 0.f)
-    {
-        std::cout <<"warning: floating point division by zero!" <<std::endl;
-    }
-    *value /= rhs;
-    return *this;
-}
+
 
 
 struct DoubleType
 {
-    explicit DoubleType(double val): value(new double(val)){}
-    ~DoubleType()
-    {
-        delete value;
-        value = nullptr;
-    }
+    explicit DoubleType(double val): value(std::make_unique<double>(val)){}
 
     DoubleType& pow(double val);
     DoubleType& pow(const DoubleType& dt);
@@ -378,6 +368,7 @@ struct DoubleType
     operator double() const {return *value;}
 
 private:
+    std::unique_ptr<double> value;
     double* value;
     DoubleType& powInternal(double power);
 };
@@ -430,12 +421,8 @@ DoubleType& DoubleType::operator/=( double rhs)
 
 struct IntType
 {
-    explicit IntType(int val) : value( new int(val) ){}
-    ~IntType()
-    {
-        delete value;
-        value = nullptr;
-    }
+    explicit IntType(int val) : value( std::make_unique<int>(val) ){}
+    
 
     IntType& pow(int val);
     IntType& pow(const IntType& it);
@@ -452,6 +439,7 @@ struct IntType
 
     operator int() const {return *value;}
 private:
+    std::unique_ptr<int> value;
     int* value;
     IntType& powInternal(int power);
 };
@@ -574,11 +562,7 @@ IntType& IntType::pow(const FloatType& ft)
     return powInternal(static_cast<int>(ft));
 }
 
-IntType& IntType::powInternal(int power)
-{
-    *value = static_cast<int>(std::pow(*value, power));
-    return *this;
-}
+
 
 struct Point
 {
@@ -743,7 +727,7 @@ void part4()
     p3.toString();   
     std::cout << "---------------------\n" << std::endl;
 }
-
+/*
 void part6()
 {
     FloatType ft3(3.0f);
@@ -795,7 +779,7 @@ void part6()
     std::cout << "it3 after: " << it3 << std::endl;
     std::cout << "---------------------\n" << std::endl;    
 }
-
+*/
 #include <cmath>
 #include <iostream>
 int main() 
@@ -854,7 +838,7 @@ int main()
 
     part4();
 
-    part6();
+   // part6();
     
     std::cout << "good to go!\n";
 
