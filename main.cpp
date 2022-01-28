@@ -24,6 +24,11 @@ Create a branch named Part8
  */
 
 #include <typeinfo>
+#include <memory>
+#include<iostream>
+#include<cmath>
+#include <functional>
+
 template<typename NumericType>
 struct Temporary
 {
@@ -36,8 +41,14 @@ struct Temporary
      revise these conversion functions to read/write to 'v' here
      hint: what qualifier do read-only functions usually have?
      */
-    operator ___() { /* read-only function */ }
-    operator ___() { /* read/write function */ }
+    operator NumericType() const 
+    { 
+        return v;
+    }
+    operator NumericType&() 
+    {
+       return v;  /* read/write function */ 
+    }
 private:
     static int counter;
     NumericType v;
@@ -47,6 +58,8 @@ private:
  2) add the definition of Temporary::counter here, which is a static variable and must be defined outside of the class.
     Remember the rules about how to define a Template member variable/function outside of the class.
 */
+template<typename Type>
+int Temporary<Type>::counter = 0;
 
 /*
  3) You'll need to template your overloaded math operator functions in your Templated Class from Ch5 p04
@@ -233,25 +246,25 @@ struct IntType;
 template <typename NumericType>
 struct Numeric
 {
-    using Type = NumericType;
+    using Type = Temporary<NumericType>;
 
     explicit Numeric(const Type& val): value(std::make_unique<Type>(val)){}
    
-    Numeric& operator+=(const Type& rhs)
+    Numeric& operator+=(const OtherType& rhs)
     {
-        *value += rhs;
+        *value += static_cast<NumericType>(rhs);
         return *this;
     }
     
-    Numeric& operator-=(const Type& rhs)
+    Numeric& operator-=(const OtherType& rhs)
     {
-        *value -= rhs;
+        *value -= static_cast<NumericType>(rhs);
         return *this;
     }
 
-    Numeric& operator*=(const Type& rhs)
+    Numeric& operator*=(const OtherType& rhs)
     {
-        *value *= rhs;
+        *value *= static_cast<NumericType>(rhs);
         return *this;
     }
 
@@ -283,85 +296,11 @@ struct Numeric
         return *this;
     }
 
-    Numeric& pow(const Type& val)
+    template<typename OtherType>
+    Numeric& pow(const OtherType& val)
     {
-        return powInternal(val);
-    }
-
-    Numeric& apply(std::function<Numeric&(std::unique_ptr<Type>&)>func)
-    {
-        if(func)
-        {
-            return func(value);
-        }
-        return *this; 
-    }
-
-    Numeric& apply(void(*ptr)(std::unique_ptr<Type>&))
-    {
-        if(ptr)
-        {
-            ptr(value);
-        }
+        *value = static_cast<NumericType>(static_cast<Type>(std::pow(*value, val)));
         return *this;
-    }
-
-    operator Type() const { return *value;}
-
-private:
-    std::unique_ptr<Type> value;
-    Numeric& powInternal(const Type& power)
-    {
-        *value = static_cast<Type>(std::pow(*value, power));
-        return *this;
-    }
-};
-
-template <typename NumericType>
-void myNumericFreeFunct(std::unique_ptr<NumericType>& free)
-{
-    auto& freeRef = *free;
-    freeRef += static_cast<NumericType>(7.0);
-}
-   
-template<>
-struct Numeric<double>
-{
-    using Type = double;
-
-    explicit Numeric(const Type& val): value(std::make_unique<Type>(val)){}
-   
-    Numeric& operator+=(const Type& rhs)
-    {
-        *value += rhs;
-        return *this;
-    }
-    
-    Numeric& operator-=(const Type& rhs)
-    {
-        *value -= rhs;
-        return *this;
-    }
-
-    Numeric& operator*=(const Type& rhs)
-    {
-        *value *= rhs;
-        return *this;
-    }
-
-    Numeric& operator/=(const Type& rhs)
-    {
-        if (rhs == 0.0)
-        {
-            std::cout <<"warning: floating point division by zero!" <<std::endl;
-        }
-        *value /= rhs;
-        return *this;
-    }
-
-    Numeric& pow(const Type& val)
-    {
-        return powInternal(val);
     }
 
     template <typename Callable>
@@ -371,17 +310,23 @@ struct Numeric<double>
         return *this; 
     }
 
+    operator NumericType() const {return *value;}
+    operator NumericType&() {return *value;}
+
     operator Type() const { return *value;}
+    operator Type&() {return *value;}
 
 private:
     std::unique_ptr<Type> value;
-    Numeric& powInternal(const Type& power)
-    {
-        *value = static_cast<Type>(std::pow(*value, power));
-        return *this;
-    }
 };
 
+template <typename NumericType>
+void myNumericFreeFunct(std::unique_ptr<NumericType>& free)
+{
+    auto& freeRef = *free;
+    freeRef += static_cast<NumericType>(7.0);
+}
+   
 struct Point
 {
     Point(const float& a, const float& b);
