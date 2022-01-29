@@ -266,12 +266,14 @@ void cube(std::unique_ptr<NumericType>& val)
    
 struct Point
 {
-    Point(const float& a, const float& b);
+    template <typename typeA, typename typeB>
+    Point(const typeA& a, const typeB& b): x(a), y(b){}
     Point(FloatType& fta, FloatType& ftb);
     Point(DoubleType& dta, DoubleType& dtb);
     Point(IntType& ita, IntType& itb);
 
-    Point& multiply(const float& m);
+    template<typename M>
+    Point& multiply(const M& m);
     Point& multiply(FloatType& ft);
     Point& multiply(DoubleType& dt);
     Point& multiply(IntType& it);
@@ -282,12 +284,11 @@ private:
     float x{0}, y{0};
 };
 
-Point::Point( const float& a, const float& b ) : x(a), y(b) { }
-
-Point& Point::multiply(const float& m)
+template<typename multi>
+Point& Point::multiply(const multi& m)
 {
-    x *= m;
-    y *= m;
+    x *= static_cast<float>(m);
+    y *= static_cast<float>(m);
     return *this;
 }
 
