@@ -272,30 +272,25 @@ struct Point
     Point(DoubleType& dta, DoubleType& dtb);
     Point(IntType& ita, IntType& itb);
 
-    template<typename M>
-    Point& multiply(const M& m);
+    template<typename multi>
+    Point& multiply(const multi& m)
+    {
+        x *= static_cast<float>(m);
+        y *= static_cast<float>(m);
+        return *this;
+    }
     Point& multiply(FloatType& ft);
     Point& multiply(DoubleType& dt);
     Point& multiply(IntType& it);
 
-    void toString();
+    void toString()
+    {
+        std::cout << "Point { x: " << x << ", y: " << y << " }" << std::endl;
+    }
     
 private:
     float x{0}, y{0};
 };
-
-template<typename multi>
-Point& Point::multiply(const multi& m)
-{
-    x *= static_cast<float>(m);
-    y *= static_cast<float>(m);
-    return *this;
-}
-
-void Point::toString()
-{
-    std::cout << "Point { x: " << x << ", y: " << y << " }" << std::endl;
-}
 
 void part3()
 {
